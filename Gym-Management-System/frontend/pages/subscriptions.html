@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscriptions - Gym Management System</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="../dashboard.html">
+                <i class="bi bi-trophy-fill"></i> Gym Management
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../dashboard.html">
+                            <i class="bi bi-house-door"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="members.html">
+                            <i class="bi bi-people"></i> Members
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="subscriptions.html">
+                            <i class="bi bi-credit-card"></i> Subscriptions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="attendance.html">
+                            <i class="bi bi-calendar-check"></i> Attendance
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="analytics.html">
+                            <i class="bi bi-bar-chart"></i> Analytics
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> <span id="userName"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-4" id="subscriptionTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="plans-tab" data-bs-toggle="tab" data-bs-target="#plans" type="button">
+                    <i class="bi bi-card-list"></i> Subscription Plans
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="member-subs-tab" data-bs-toggle="tab" data-bs-target="#member-subs" type="button">
+                    <i class="bi bi-people-fill"></i> Member Subscriptions
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="expiring-tab" data-bs-toggle="tab" data-bs-target="#expiring" type="button">
+                    <i class="bi bi-exclamation-triangle"></i> Expiring Soon
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Content -->
+        <div class="tab-content" id="subscriptionTabContent">
+            <!-- Plans Tab -->
+            <div class="tab-pane fade show active" id="plans">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h4>Subscription Plans</h4>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPlanModal">
+                            <i class="bi bi-plus-circle"></i> Add New Plan
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row" id="plansContainer">
+                    <div class="col-12 text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member Subscriptions Tab -->
+            <div class="tab-pane fade" id="member-subs">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h4>Member Subscriptions</h4>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addSubscriptionModal">
+                            <i class="bi bi-plus-circle"></i> New Subscription
+                        </button>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <select class="form-select" id="subscriptionStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="expired">Expired</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Member Name</th>
+                                        <th>Plan</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th>Amount</th>
+                                        <th>Payment Mode</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subscriptionsTableBody">
+                                    <tr>
+                                        <td colspan="8" class="text-center">
+                                            <div class="spinner-border text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expiring Soon Tab -->
+            <div class="tab-pane fade" id="expiring">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <h4>Subscriptions Expiring Soon</h4>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <select class="form-select w-auto d-inline-block" id="expiringDaysFilter">
+                            <option value="7">Next 7 days</option>
+                            <option value="14">Next 14 days</option>
+                            <option value="30">Next 30 days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row" id="expiringContainer">
+                    <div class="col-12 text-center">
+                        <div class="spinner-border text-warning" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Plan Modal -->
+    <div class="modal fade" id="addPlanModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Subscription Plan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPlanForm">
+                        <div class="mb-3">
+                            <label class="form-label">Plan Name *</label>
+                            <input type="text" class="form-control" name="plan_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Duration (Months) *</label>
+                            <input type="number" class="form-control" name="duration_months" required min="1" max="12">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Price (Rs.) *</label>
+                            <input type="number" class="form-control" name="price" required min="0" step="0.01">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Features</label>
+                            <textarea class="form-control" name="features" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="addPlan()">Add Plan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Subscription Modal -->
+    <div class="modal fade" id="addSubscriptionModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">New Member Subscription</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addSubscriptionForm">
+                        <div class="mb-3">
+                            <label class="form-label">Select Member *</label>
+                            <select class="form-select" name="member_id" id="memberSelect" required>
+                                <option value="">Loading members...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Select Plan *</label>
+                            <select class="form-select" name="plan_id" id="planSelect" required onchange="updatePlanDetails()">
+                                <option value="">Loading plans...</option>
+                            </select>
+                        </div>
+                        <div class="mb-3" id="planDetailsDiv" style="display: none;">
+                            <div class="alert alert-info">
+                                <strong>Plan Details:</strong>
+                                <div id="planDetails"></div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Start Date *</label>
+                            <input type="datetime-local" class="form-control" name="start_date" id="startDate" required onchange="calculateEndDate()">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">End Date *</label>
+                            <input type="datetime-local" class="form-control" name="end_date" id="endDate" required readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Payment Amount (Rs.) *</label>
+                            <input type="number" class="form-control" name="payment_amount" id="paymentAmount" required min="0" step="0.01" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Payment Mode *</label>
+                            <select class="form-select" name="payment_mode" required>
+                                <option value="Cash">Cash</option>
+                                <option value="Card">Card</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Net Banking">Net Banking</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="addSubscription()">Create Subscription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+     <!-- Add this BEFORE app.js -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script src="../js/subscriptions.js"></script>
+    <script>
+    // Protect admin pages
+    document.addEventListener('DOMContentLoaded', function() {
+        if (!requireAdmin()) {
+            return;
+        }
+        
+        // Display user name
+        const userName = localStorage.getItem('user_name');
+        const userNameElement = document.getElementById('userName');
+        if (userNameElement) {
+            userNameElement.textContent = userName || 'Admin';
+        }
+    });
+    </script>
+</body>
+</html>

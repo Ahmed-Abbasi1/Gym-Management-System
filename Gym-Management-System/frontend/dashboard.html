@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Management System - Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="dashboard.html">
+                <i class="bi bi-trophy-fill"></i> Gym Management
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="dashboard.html">
+                            <i class="bi bi-house-door"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/members.html">
+                            <i class="bi bi-people"></i> Members
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/subscriptions.html">
+                            <i class="bi bi-credit-card"></i> Subscriptions
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/attendance.html">
+                            <i class="bi bi-calendar-check"></i> Attendance
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pages/analytics.html">
+                            <i class="bi bi-bar-chart"></i> Analytics
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> <span id="userName"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">Dashboard Overview</h2>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row" id="statsCards">
+            <!-- Member Stats -->
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card text-white bg-primary">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">Total Members</h6>
+                                <h2 class="card-title mb-0" id="totalMembers">-</h2>
+                            </div>
+                            <i class="bi bi-people stats-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card text-white bg-success">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">Active Members</h6>
+                                <h2 class="card-title mb-0" id="activeMembers">-</h2>
+                            </div>
+                            <i class="bi bi-check-circle stats-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card text-white bg-warning">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">Expired Members</h6>
+                                <h2 class="card-title mb-0" id="expiredMembers">-</h2>
+                            </div>
+                            <i class="bi bi-exclamation-circle stats-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 mb-4">
+                <div class="card stats-card text-white bg-info">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="card-subtitle mb-2">In Gym Now</h6>
+                                <h2 class="card-title mb-0" id="currentlyInGym">-</h2>
+                            </div>
+                            <i class="bi bi-person-check stats-icon"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Stats -->
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-cash-coin text-success"></i> Total Revenue
+                        </h5>
+                        <h3 class="text-success" id="totalRevenue">Rs. -</h3>
+                        <p class="text-muted mb-0">All time</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-calendar-month text-primary"></i> Monthly Revenue
+                        </h5>
+                        <h3 class="text-primary" id="monthlyRevenue">Rs. -</h3>
+                        <p class="text-muted mb-0">Current month</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-calendar-year text-info"></i> Yearly Revenue
+                        </h5>
+                        <h3 class="text-info" id="yearlyRevenue">Rs. -</h3>
+                        <p class="text-muted mb-0">Current year</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Attendance -->
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calendar-check"></i> Today's Attendance
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <h4 id="todayCheckIns">-</h4>
+                                <p class="text-muted">Total Check-ins</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 id="todayInGym">-</h4>
+                                <p class="text-muted">Currently In Gym</p>
+                            </div>
+                            <div class="col-md-4">
+                                <h4 id="todayCompleted">-</h4>
+                                <p class="text-muted">Completed Sessions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-12 mb-4">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning-charge"></i> Quick Actions
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <a href="pages/members.html" class="btn btn-primary w-100">
+                                    <i class="bi bi-person-plus"></i> Add New Member
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="pages/subscriptions.html" class="btn btn-success w-100">
+                                    <i class="bi bi-credit-card"></i> New Subscription
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="pages/attendance.html" class="btn btn-info w-100">
+                                    <i class="bi bi-check-square"></i> Mark Attendance
+                                </a>
+                            </div>
+                            <div class="col-md-3 mb-2">
+                                <a href="pages/analytics.html" class="btn btn-warning w-100">
+                                    <i class="bi bi-graph-up"></i> View Reports
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="text-center mt-5" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Protect admin pages
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!requireAdmin()) {
+                return;
+            }
+            
+            // Display user name
+            const userName = localStorage.getItem('user_name');
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement) {
+                userNameElement.textContent = userName || 'Admin';
+            }
+        });
+    </script>
+</body>
+</html>
