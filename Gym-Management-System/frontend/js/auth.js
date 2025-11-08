@@ -1,6 +1,3 @@
-// Authentication utilities
-// Note: API_BASE_URL is defined in app.js
-
 // Check if user is logged in
 function isAuthenticated() {
     return localStorage.getItem('access_token') !== null;
