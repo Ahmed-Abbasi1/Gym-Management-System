@@ -49,17 +49,9 @@ function requireAdmin() {
         return false;
     }
     
-    if (!isAdmin()) {
-        alert('Access denied. Admin privileges required.');
-        if (window.location.pathname.includes('/pages/')) {
-            window.location.href = '../member-dashboard.html';
-        } else {
-            window.location.href = 'member-dashboard.html';
-        }
-        return false;
-    }
-    
-    return true;
+    function isAuthenticated() {
+    if (AUTH_DISABLED) return true;
+    return localStorage.getItem('access_token') !== null;
 }
 
 // Protect member pages
