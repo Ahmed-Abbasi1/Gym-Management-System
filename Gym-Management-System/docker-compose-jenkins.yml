@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  mongodb-jenkins:
+    image: mongo:latest
+    container_name: gym-mongodb-jenkins
+    ports:
+      - "27018:27017"
+    volumes:
+      - mongo-data-jenkins:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: gym_management_db
+    networks:
+      - gym-network-jenkins
+    restart: unless-stopped
+
+  backend-jenkins:
+    image: itxjani/gym-backend:latest
+    container_name: gym-backend-jenkins
+    ports:
+      - "4000:8000"
+    depends_on:
+      - mongodb-jenkins
+    volumes:
+      - ./backend:/app
+    environment:
+      - MONGODB_URL=mongodb://mongodb-jenkins:27017
+      - DATABASE_NAME=gym_management_db
+      - APP_NAME=Gym Management System
+      - DEBUG=True
+      - SECRET_KEY=your-secret-key-here-change-this-in-production-make-it-very-long-and-random
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+    networks:
+      - gym-network-jenkins
+    restart: unless-stopped
+
+  frontend-jenkins:
+    image: nginx:alpine
+    container_name: gym-frontend-jenkins
+    ports:
+      - "8081:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - backend-jenkins
+    networks:
+      - gym-network-jenkins
+    restart: unless-stopped
+
+volumes:
+  mongo-data-jenkins:
+    driver: local
+
+networks:
+  gym-network-jenkins:
+    driver: bridge

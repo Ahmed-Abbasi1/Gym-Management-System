@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out code from GitHub...'
+                checkout scm
+            }
+        }
+        
+        stage('Build and Deploy') {
+            steps {
+                echo 'Building and deploying containerized application...'
+                script {
+                    sh '''
+                        # Stop existing containers if running
+                        docker-compose -f docker-compose-jenkins.yml down || true
+                        
+                        # Pull latest image from Docker Hub
+                        docker pull itxjani/gym-backend:latest
+                        
+                        # Start containers with volume-mounted code
+                        docker-compose -f docker-compose-jenkins.yml up -d
+                        
+                        # Wait for containers to be healthy
+                        sleep 10
+                        
+                        # Show running containers
+                        docker-compose -f docker-compose-jenkins.yml ps
+                    '''
+                }
+            }
+        }
+        
+        stage('Verify Deployment') {
+            steps {
+                echo 'Verifying deployment...'
+                script {
+                    sh '''
+                        # Check if all containers are running
+                        docker ps | grep jenkins
+                        echo "Application should be accessible at:"
+                        echo "Frontend: http://54.234.22.61:8081/"
+                        echo "Backend API: http://54.234.22.61:4000/docs"
+                    '''
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
