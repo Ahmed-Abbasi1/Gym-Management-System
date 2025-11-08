@@ -1,5 +1,8 @@
 // API Base URL - Change this to your backend URL
-const API_BASE_URL = 'http://127.0.0.1:8000';
+// Use environment-based API URL
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://127.0.0.1:8000' 
+    : `http://${window.location.hostname}:3000`;
 
 // Global variables
 let dashboardData = null;
