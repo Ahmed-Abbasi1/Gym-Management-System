@@ -43,8 +43,8 @@ pipeline {
                         # Check if all containers are running
                         docker ps | grep jenkins
                         echo "Application should be accessible at:"
-                        echo "Frontend: http://54.234.22.61:8081/"
-                        echo "Backend API: http://54.234.22.61:4000/docs"
+                        echo "Frontend: http://98.93.16.22:8081/"
+                        echo "Backend API: http://98.93.16.22:4000/docs"
                     '''
                 }
             }
