@@ -1,9 +1,18 @@
-// API Base URL - Change this to your backend URL
-// Use environment-based API URL
-const API_PORT = window.location.port === '8081' ? '4000' : '3000';
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-    ? 'http://127.0.0.1:8000' 
-    : `http://${window.location.hostname}:${API_PORT}`;
+// Auto-detect environment based on hostname
+let API_BASE_URL;
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    API_BASE_URL = 'http://127.0.0.1:8000';
+} else if (window.location.hostname === '98.93.16.22') {
+    // Check if we're on Part II (port 8081) or Part I
+    API_BASE_URL = window.location.port === '8081' 
+        ? 'http://98.93.16.22:4000'  // Part II
+        : 'http://98.93.16.22:3000'; // Part I
+} else if (window.location.hostname === '54.234.22.61') {
+    API_BASE_URL = 'http://54.234.22.61:3000';  // Part I
+} else {
+    // Default fallback
+    API_BASE_URL = `http://${window.location.hostname}:3000`;
+}
 
 // Global variables
 let dashboardData = null;
