@@ -1,18 +1,17 @@
-// Auto-detect environment based on hostname
+// Detect Part I vs Part II based on frontend port
 let API_BASE_URL;
 if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     API_BASE_URL = 'http://127.0.0.1:8000';
-} else if (window.location.hostname === '98.93.16.22') {
-    // Check if we're on Part II (port 8081) or Part I
-    API_BASE_URL = window.location.port === '8081' 
-        ? 'http://98.93.16.22:4000'  // Part II
-        : 'http://98.93.16.22:3000'; // Part I
-} else if (window.location.hostname === '54.234.22.61') {
-    API_BASE_URL = 'http://54.234.22.61:3000';  // Part I
+} else if (window.location.port === '8081') {
+    // Part II - Jenkins deployment
+    API_BASE_URL = `http://${window.location.hostname}:4000`;
 } else {
-    // Default fallback
+    // Part I - Regular deployment
     API_BASE_URL = `http://${window.location.hostname}:3000`;
 }
+console.log('Using API_BASE_URL:', API_BASE_URL, 'Frontend Port:', window.location.port);
+
+
 
 // Global variables
 let dashboardData = null;
