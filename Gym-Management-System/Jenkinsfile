@@ -1,15 +1,21 @@
 pipeline {
     agent any
     
+    environment {
+        APP_REPO = 'https://github.com/Ahmed-Abbasi1/Gym-Management-System.git'
+        TEST_REPO = 'https://github.com/Ahmed-Abbasi1/Gym-Management-System-Tests.git'
+        DOCKER_IMAGE = 'itxjani/gym-backend:latest'
+    }
+    
     stages {
-        stage('Checkout') {
+        stage('Checkout Application Code') {
             steps {
-                echo 'Checking out code from GitHub...'
+                echo 'Checking out application code from GitHub...'
                 checkout scm
             }
         }
         
-        stage('Build and Deploy') {
+        stage('Build and Deploy Application') {
             steps {
                 echo 'Building and deploying containerized application...'
                 script {
@@ -20,16 +26,53 @@ pipeline {
                         docker-compose -f docker-compose-jenkins.yml down || true
                         
                         # Pull latest image from Docker Hub
-                        docker pull itxjani/gym-backend:latest
+                        docker pull ${DOCKER_IMAGE}
                         
                         # Start containers with volume-mounted code
                         docker-compose -f docker-compose-jenkins.yml up -d
                         
                         # Wait for containers to be healthy
-                        sleep 10
+                        sleep 15
                         
                         # Show running containers
                         docker-compose -f docker-compose-jenkins.yml ps
+                    '''
+                }
+            }
+        }
+        
+        stage('Checkout Test Code') {
+            steps {
+                echo 'Checking out test code from GitHub...'
+                dir('tests-repo') {
+                    git branch: 'main',
+                        url: "${TEST_REPO}"
+                }
+            }
+        }
+        
+        stage('Run Selenium Tests') {
+            steps {
+                echo 'Running Selenium tests in Docker container...'
+                script {
+                    sh '''
+                        cd tests-repo
+                        
+                        # Build test Docker image
+                        docker build -t gym-tests:latest .
+                        
+                        # Run tests in container
+                        docker run --rm \
+                            --name gym-selenium-tests \
+                            -v $(pwd)/reports:/tests/reports \
+                            gym-tests:latest \
+                            pytest test_gym_app.py -v \
+                            --html=reports/report.html \
+                            --self-contained-html \
+                            --junit-xml=reports/results.xml || true
+                        
+                        # Check if report was generated
+                        ls -la reports/
                     '''
                 }
             }
@@ -42,9 +85,9 @@ pipeline {
                     sh '''
                         # Check if all containers are running
                         docker ps | grep jenkins
-                        echo "Application should be accessible at:"
-                        echo "Frontend: http://100.27.185.153:8081/"
-                        echo "Backend API: http://100.27.185.153:4000/docs"
+                        echo "Application URLs:"
+                        echo "Frontend: http://54.226.193.105:8081/"
+                        echo "Backend API: http://54.226.193.105:4000/docs"
                     '''
                 }
             }
@@ -52,11 +95,59 @@ pipeline {
     }
     
     post {
+        always {
+            echo 'Publishing test results...'
+            // Archive test reports
+            archiveArtifacts artifacts: 'tests-repo/reports/**/*', allowEmptyArchive: true
+            
+            // Publish JUnit test results
+            junit testResults: 'tests-repo/reports/results.xml', allowEmptyResults: true
+            
+            // Publish HTML report
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'tests-repo/reports',
+                reportFiles: 'report.html',
+                reportName: 'Selenium Test Report'
+            ])
+        }
+        
         success {
             echo 'Pipeline completed successfully!'
+            emailext (
+                subject: "✅ Jenkins Build Successful - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h2>Build Success!</h2>
+                    <p><strong>Job:</strong> ${env.JOB_NAME}</p>
+                    <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+                    <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <p><strong>Test Report:</strong> <a href="${env.BUILD_URL}Selenium_20Test_20Report/">View Test Report</a></p>
+                    <hr>
+                    <p>All tests passed successfully!</p>
+                """,
+                to: "${env.GIT_COMMITTER_EMAIL}",
+                mimeType: 'text/html'
+            )
         }
+        
         failure {
             echo 'Pipeline failed!'
+            emailext (
+                subject: "❌ Jenkins Build Failed - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <h2>Build Failed!</h2>
+                    <p><strong>Job:</strong> ${env.JOB_NAME}</p>
+                    <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+                    <p><strong>Build URL:</strong> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <p><strong>Console Output:</strong> <a href="${env.BUILD_URL}console">View Console</a></p>
+                    <hr>
+                    <p>Please check the console output for details.</p>
+                """,
+                to: "${env.GIT_COMMITTER_EMAIL}",
+                mimeType: 'text/html'
+            )
         }
     }
 }
