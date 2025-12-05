@@ -5,3 +5,4 @@
 "# Test trigger" 
 "# Test trigger" 
 "# Testing Assignment 3 pipeline" 
+"# Trigger pipeline with fixed Dockerfile" 
