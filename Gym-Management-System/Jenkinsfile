@@ -127,7 +127,7 @@ pipeline {
                     <hr>
                     <p>All tests passed successfully!</p>
                 """,
-                to: "${env.GIT_COMMITTER_EMAIL}",
+                to: "ahmedabassi093@gmail.com",
                 mimeType: 'text/html'
             )
         }
@@ -145,7 +145,7 @@ pipeline {
                     <hr>
                     <p>Please check the console output for details.</p>
                 """,
-                to: "${env.GIT_COMMITTER_EMAIL}",
+                to: "ahmedabassi093@gmail.com",
                 mimeType: 'text/html'
             )
         }
