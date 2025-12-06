@@ -116,28 +116,16 @@ pipeline {
         
         success {
             echo 'Pipeline completed successfully!'
-            script {
-                emailext (
-                    subject: "Jenkins Build Successful - Build #${env.BUILD_NUMBER}",
-                    body: "Build succeeded! Check test results at: ${env.BUILD_URL}",
-                    to: "ahmedabassi093@gmail.com",
-                    from: "ahmedabassi093@gmail.com",
-                    replyTo: "ahmedabassi093@gmail.com"
-                )
-            }
+            mail to: 'ahmedabassi093@gmail.com',
+                 subject: "✅ Jenkins Build Successful - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Build completed successfully!\n\nJob: ${env.JOB_NAME}\nBuild: ${env.BUILD_NUMBER}\n\nTest Report: ${env.BUILD_URL}Selenium_20Test_20Report/\nBuild URL: ${env.BUILD_URL}"
         }
         
         failure {
             echo 'Pipeline failed!'
-            script {
-                emailext (
-                    subject: "Jenkins Build Failed - Build #${env.BUILD_NUMBER}",
-                    body: "Build failed! Check console at: ${env.BUILD_URL}console",
-                    to: "ahmedabassi093@gmail.com",
-                    from: "ahmedabassi093@gmail.com",
-                    replyTo: "ahmedabassi093@gmail.com"
-                )
-            }
+            mail to: 'ahmedabassi093@gmail.com',
+                 subject: "❌ Jenkins Build Failed - ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                 body: "Build failed!\n\nJob: ${env.JOB_NAME}\nBuild: ${env.BUILD_NUMBER}\n\nConsole Output: ${env.BUILD_URL}console"
         }
     }
 }
