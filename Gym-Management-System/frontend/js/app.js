@@ -1,15 +1,6 @@
-// Detect Part I vs Part II based on frontend port
-let API_BASE_URL;
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    API_BASE_URL = 'http://127.0.0.1:8000';
-} else if (window.location.port === '8081') {
-    // Part II - Jenkins deployment
-    API_BASE_URL = `http://${window.location.hostname}:4000`;
-} else {
-    // Part I - Regular deployment
-    API_BASE_URL = `http://${window.location.hostname}:3000`;
-}
-console.log('Using API_BASE_URL:', API_BASE_URL, 'Frontend Port:', window.location.port);
+// Use the correct backend API URL for Kubernetes
+const API_BASE_URL = window.location.protocol + '//' + window.location.host + '/api';
+console.log('Using API_BASE_URL:', API_BASE_URL);
 
 
 
